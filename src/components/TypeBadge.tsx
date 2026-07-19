@@ -1,6 +1,7 @@
 import { capitalize } from '../utils/format';
 import { typeColor } from '../utils/typeColors';
 
+// Colored pill for a Pokémon type (e.g. "Water"), color looked up from typeColors.ts.
 export default function TypeBadge({ type }: { type: string }) {
   return (
     <span

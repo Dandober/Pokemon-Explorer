@@ -9,6 +9,8 @@ interface FavoritesContextValue {
 const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 const STORAGE_KEY = 'pokemon-explorer:favorites';
 
+// Favorites (Question 5) live app-wide so the grid, list, and detail page all
+// stay in sync, and persist to localStorage so they survive a page refresh.
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<Set<string>>(() => {
     try {

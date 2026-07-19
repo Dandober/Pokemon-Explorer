@@ -3,6 +3,7 @@ interface Props {
   onChange: (layout: 'grid' | 'list') => void;
 }
 
+// Grid/list switch (Question 2) — purely presentational, the parent owns the state.
 export default function LayoutToggle({ layout, onChange }: Props) {
   return (
     <div className="flex items-center rounded-full border border-slate-200 bg-white p-1 dark:border-slate-800 dark:bg-slate-800">

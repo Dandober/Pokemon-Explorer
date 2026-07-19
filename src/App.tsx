@@ -9,6 +9,8 @@ import Favorites from './pages/Favorites';
 import Home from './pages/Home';
 import PokemonDetailPage from './pages/PokemonDetailPage';
 
+// Root layout: wraps every route in the theme/favorites/custom-pokemon
+// providers so any page can read or update that state via its hook.
 export default function App() {
   return (
     <ThemeProvider>

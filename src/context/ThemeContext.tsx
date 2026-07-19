@@ -10,6 +10,7 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 const STORAGE_KEY = 'pokemon-explorer:theme';
 
+// Prefer a saved choice; otherwise fall back to the OS-level light/dark setting.
 function getInitialTheme(): Theme {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === 'light' || stored === 'dark') return stored;

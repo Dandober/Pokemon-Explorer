@@ -3,6 +3,8 @@ interface Props {
   onChange: (value: string) => void;
 }
 
+// Controlled search input; the ✕ button clears the value so the caller can
+// fall back to the original (non-searched) list.
 export default function SearchBar({ value, onChange }: Props) {
   return (
     <div className="relative w-full max-w-sm">

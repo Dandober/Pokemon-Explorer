@@ -1,3 +1,4 @@
+// Shared loading indicator used by every async view (list, search, detail, favorites).
 export default function Spinner({ label = 'Loading...' }: { label?: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-10 text-slate-400">

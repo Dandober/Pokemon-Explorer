@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 const SHOW_AFTER_PX = 400;
 
+// Floating button that appears once the user has scrolled past SHOW_AFTER_PX.
 export default function BackToTop() {
   const [visible, setVisible] = useState(false);
 

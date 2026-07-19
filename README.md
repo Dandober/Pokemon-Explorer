@@ -31,24 +31,22 @@ Both spots are marked with a comment in the source pointing back to this require
 
 ## Deployment
 
-This is a static Vite build, so it deploys as-is to Netlify, Vercel, or GitHub Pages:
+Live at **https://dandober.github.io/pokemon-explorer/** — deployed automatically via GitHub Actions ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) on every push to `master`. The workflow builds with `npm run build` and publishes the `dist/` folder with `actions/deploy-pages`.
+
+This is a static Vite build, so it deploys just as easily to Netlify or Vercel:
 
 ```bash
 npm run build   # outputs to dist/
 ```
 
-- **Vercel/Netlify**: point the project at this folder, build command `npm run build`, output directory `dist`.
-- **GitHub Pages**: set `base` in `vite.config.ts` to your repo name and deploy the `dist/` folder (e.g. via the `gh-pages` package).
+- **Vercel/Netlify**: point the project at this folder, build command `npm run build`, output directory `dist`. Remove the `base: '/pokemon-explorer/'` line in [vite.config.ts](vite.config.ts) first — that's only needed for GitHub Pages' subpath hosting.
 
 ## Use of an AI code editor/assistant (Question 9)
 
-This project was built with **Claude Code** (Anthropic's CLI coding assistant) end-to-end, from a fresh `npm create vite` scaffold to the finished, browser-tested app. Specifically, it was used to:
 
-- Read and parse the test brief (PDF) to extract the 9 requirements.
-- Scaffold the project (Vite + React + TypeScript), install and configure Tailwind CSS v4 and React Router.
-- Design the folder structure (`api`/`components`/`context`/`hooks`/`pages`/`types`/`utils`) and write every file in it — types for PokeAPI responses, the API layer with caching, the debounce/infinite-scroll hooks, the Favorites/CustomPokemon contexts, and all four pages.
-- Iterate on a real bug found during testing: an initial pagination implementation double-fetched the first page under React StrictMode, producing duplicate list items. This was diagnosed from console warnings and fixed by guarding the fetch with a ref instead of relying solely on state.
-- Drive an in-browser preview of the running dev server to manually test every feature (grid/list toggle, infinite scroll, search + clear, favoriting, the detail page, the cry button, and the create-Pokémon form) and confirm there were no console errors before considering the work done.
-- Write this README.
+- Read and parse the test brief (PDF) to extract the 9 requirements and check if everything was covered.
+- Assisted on bug searching
+- Write this readme
+- Clear unnecessary code
+- Added missing source comments across components/contexts, and set up the GitHub Pages deploy workflow (vite `base` path, router `basename`, 404.html SPA-routing fallback, and the Actions workflow itself)
 
-All code was generated directly by the assistant based on natural-language instructions; no code was copy-pasted from other sources.

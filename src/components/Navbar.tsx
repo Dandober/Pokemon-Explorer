@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
+// Top nav bar: route links (Explore/Favorites/Create) plus the light/dark toggle.
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
 
