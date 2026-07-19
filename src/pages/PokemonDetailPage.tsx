@@ -3,14 +3,65 @@ import { Link, useParams } from 'react-router-dom';
 import { fetchPokemonDetail, fetchTypeDetail } from '../api/pokemon';
 import Spinner from '../components/Spinner';
 import TypeBadge from '../components/TypeBadge';
+import { useCustomPokemon } from '../context/CustomPokemonContext';
 import { useFavorites } from '../context/FavoritesContext';
-import type { PokemonDetail } from '../types/pokemon';
+import type { PokemonCardData, PokemonDetail } from '../types/pokemon';
 import { capitalize, decimetresToMetres, formatPokemonId, hectogramsToKg } from '../utils/format';
 import { typeColor } from '../utils/typeColors';
 import { calculateWeaknesses, type TypeEffectiveness } from '../utils/weaknesses';
 
 export default function PokemonDetailPage() {
   const { name } = useParams<{ name: string }>();
+  const { customPokemon } = useCustomPokemon();
+
+  // Custom Pokémon aren't in the PokeAPI, so there's nothing to fetch for them
+  const customMatch = customPokemon.find(p => p.id === name);
+  if (customMatch) return <CustomPokemonDetail pokemon={customMatch} />;
+
+  return <ApiPokemonDetail name={name} />;
+}
+
+function CustomPokemonDetail({ pokemon }: { pokemon: PokemonCardData }) {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favorited = isFavorite(pokemon.name);
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-8">
+      <Link to="/" className="text-sm text-slate-500 hover:text-red-600 dark:text-slate-400">
+        ← Back to Explore
+      </Link>
+
+      <div className="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-800">
+        {/* Hero */}
+        <div className="flex flex-col items-center gap-4 bg-gradient-to-br from-red-50 to-slate-50 p-8 text-center dark:from-slate-700 dark:to-slate-800">
+          <img src={pokemon.image} alt={pokemon.name} className="h-48 w-48 object-contain drop-shadow-lg" />
+          <p className="text-sm font-medium uppercase tracking-wide text-slate-400">Custom</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{capitalize(pokemon.name)}</h1>
+
+          <button
+            type="button"
+            onClick={() => toggleFavorite(pokemon.name)}
+            className="mt-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition hover:shadow dark:border-slate-600 dark:bg-slate-700"
+          >
+            {favorited ? '❤️ Favorited' : '🤍 Add to favorites'}
+          </button>
+        </div>
+
+        {/* Quick stats */}
+        <div className="grid grid-cols-2 gap-4 border-t border-slate-200 p-6 text-center dark:border-slate-700">
+          <Stat label="Height" value={pokemon.height !== undefined ? `${pokemon.height} m` : '—'} />
+          <Stat label="Weight" value={pokemon.weight !== undefined ? `${pokemon.weight} kg` : '—'} />
+        </div>
+
+        <p className="border-t border-slate-200 p-6 text-center text-sm text-slate-400 dark:border-slate-700">
+          This Pokémon was created locally and isn't in the PokeAPI, so there's no type, ability, or stat data to show.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ApiPokemonDetail({ name }: { name?: string }) {
   const [pokemon, setPokemon] = useState<PokemonDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

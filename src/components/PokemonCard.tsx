@@ -17,7 +17,9 @@ export default function PokemonCard({ pokemon, layout }: Props) {
     toggleFavorite(pokemon.name);
   }
 
-  const linkTo = pokemon.isCustom ? '#' : `/pokemon/${pokemon.name}`;
+  // Custom pokemon are routed by their generated id (not name) since they
+  // don't exist in the API
+  const linkTo = `/pokemon/${pokemon.isCustom ? pokemon.id : pokemon.name}`;
 
   const card = (
     <div
@@ -51,8 +53,6 @@ export default function PokemonCard({ pokemon, layout }: Props) {
       </div>
     </div>
   );
-
-  if (pokemon.isCustom) return card;
 
   return <Link to={linkTo}>{card}</Link>;
 }
