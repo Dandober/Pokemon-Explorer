@@ -31,7 +31,7 @@ Both spots are marked with a comment in the source pointing back to this require
 
 ## Deployment
 
-Live at **https://dandober.github.io/pokemon-explorer/** — deployed automatically via GitHub Actions ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) on every push to `master`. The workflow builds with `npm run build` and publishes the `dist/` folder with `actions/deploy-pages`.
+Live at **https://dandober.github.io/Pokemon-Explorer/** — deployed automatically via GitHub Actions ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) on every push to `master`. The workflow builds with `npm run build` and publishes the `dist/` folder with `actions/deploy-pages`.
 
 This is a static Vite build, so it deploys just as easily to Netlify or Vercel:
 
@@ -39,7 +39,7 @@ This is a static Vite build, so it deploys just as easily to Netlify or Vercel:
 npm run build   # outputs to dist/
 ```
 
-- **Vercel/Netlify**: point the project at this folder, build command `npm run build`, output directory `dist`. Remove the `base: '/pokemon-explorer/'` line in [vite.config.ts](vite.config.ts) first — that's only needed for GitHub Pages' subpath hosting.
+- **Vercel/Netlify**: point the project at this folder, build command `npm run build`, output directory `dist`. Remove the `base: '/Pokemon-Explorer/'` line in [vite.config.ts](vite.config.ts) first — that's only needed for GitHub Pages' subpath hosting.
 
 ## Use of an AI code editor/assistant (Question 9)
 
