@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import BackToTop from './components/BackToTop';
 import Navbar from './components/Navbar';
 import { CustomPokemonProvider } from './context/CustomPokemonContext';
 import { FavoritesProvider } from './context/FavoritesContext';
@@ -21,6 +22,7 @@ export default function App() {
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/create" element={<CreatePokemon />} />
             </Routes>
+            <BackToTop />
           </div>
         </CustomPokemonProvider>
       </FavoritesProvider>
