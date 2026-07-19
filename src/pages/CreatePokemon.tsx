@@ -88,7 +88,11 @@ export default function CreatePokemon() {
 
         {/* Image + preview */}
         <Field label="Image">
-          <input type="file" accept="image/*" onChange={handleImageChange} className="text-sm" />
+          <label className="flex w-fit cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600">
+            <span aria-hidden="true">📷</span>
+            {preview ? 'Change photo' : 'Add a photo'}
+            <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+          </label>
         </Field>
 
         {preview && (
