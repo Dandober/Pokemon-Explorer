@@ -17,7 +17,11 @@ npm run dev      # start the dev server (http://localhost:5174)
 npm run build     # production build
 npm run preview   # preview the production build
 ```
+### Cosmetic additions
 
+- Light and dark mode
+- Back to top button
+- More Pokemon relevant status
 
 
 ### Performance fix (Question 6)
