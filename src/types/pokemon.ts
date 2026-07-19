@@ -54,6 +54,18 @@ export interface PokemonDetail {
   stats: PokemonStat[];
 }
 
+// Used to work out weaknesses and resistances for a type
+export interface TypeDamageRelations {
+  double_damage_from: NamedResource[];
+  half_damage_from: NamedResource[];
+  no_damage_from: NamedResource[];
+}
+
+export interface TypeDetail {
+  name: string;
+  damage_relations: TypeDamageRelations;
+}
+
 // Shared shape for a Pokémon card, so real and custom Pokémon look the same
 export interface PokemonCardData {
   id: number | string;

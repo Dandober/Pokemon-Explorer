@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { fetchPokemonDetail } from '../api/pokemon';
+import { fetchPokemonDetail, fetchTypeDetail } from '../api/pokemon';
 import Spinner from '../components/Spinner';
 import TypeBadge from '../components/TypeBadge';
 import { useFavorites } from '../context/FavoritesContext';
 import type { PokemonDetail } from '../types/pokemon';
 import { capitalize, decimetresToMetres, formatPokemonId, hectogramsToKg } from '../utils/format';
+import { typeColor } from '../utils/typeColors';
+import { calculateWeaknesses, type TypeEffectiveness } from '../utils/weaknesses';
 
 export default function PokemonDetailPage() {
   const { name } = useParams<{ name: string }>();
   const [pokemon, setPokemon] = useState<PokemonDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [weaknesses, setWeaknesses] = useState<TypeEffectiveness[] | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { isFavorite, toggleFavorite } = useFavorites();
 
@@ -19,11 +22,20 @@ export default function PokemonDetailPage() {
     if (!name) return;
     setLoading(true);
     setError(null);
+    setWeaknesses(null);
     fetchPokemonDetail(name)
       .then(setPokemon)
       .catch(() => setError('Could not load this Pokémon.'))
       .finally(() => setLoading(false));
   }, [name]);
+
+  // Work out this Pokémon's weaknesses
+  useEffect(() => {
+    if (!pokemon) return;
+    Promise.all(pokemon.types.map(t => fetchTypeDetail(t.type.name)))
+      .then(typeDetails => setWeaknesses(calculateWeaknesses(typeDetails.map(t => t.damage_relations))))
+      .catch(console.error);
+  }, [pokemon]);
 
   function playCry() {
     const cryUrl = pokemon?.cries?.latest ?? pokemon?.cries?.legacy;
@@ -122,6 +134,29 @@ export default function PokemonDetailPage() {
             ))}
           </div>
         </div>
+
+        {/* Weaknesses */}
+        {weaknesses && weaknesses.length > 0 && (
+          <div className="border-t border-slate-200 p-6 dark:border-slate-700">
+            <h2 className="mb-4 text-lg font-semibold text-slate-800 dark:text-slate-100">
+              Weak against
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {weaknesses.map(w => (
+                <span
+                  key={w.type}
+                  className="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-sm"
+                  style={{ backgroundColor: typeColor(w.type) }}
+                >
+                  {capitalize(w.type)}
+                  <span className="rounded-full bg-black/20 px-1.5 py-0.5 text-[10px]">
+                    {w.multiplier}×
+                  </span>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

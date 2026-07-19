@@ -1,9 +1,10 @@
-import type { PokemonDetail, PokemonListItem, PokemonListResponse } from '../types/pokemon';
+import type { PokemonDetail, PokemonListItem, PokemonListResponse, TypeDetail } from '../types/pokemon';
 
 const BASE_URL = 'https://pokeapi.co/api/v2';
 
 // Keeps already-loaded Pokémon in memory so we don't fetch them again
 const detailCache = new Map<string, Promise<PokemonDetail>>();
+const typeCache = new Map<string, Promise<TypeDetail>>();
 let allPokemonIndexCache: PokemonListItem[] | null = null;
 
 export async function fetchPokemonPage(
@@ -27,6 +28,21 @@ export async function fetchPokemonDetail(nameOrId: string | number): Promise<Pok
 
   detailCache.set(key, promise);
   promise.catch(() => detailCache.delete(key));
+  return promise;
+}
+
+export async function fetchTypeDetail(name: string): Promise<TypeDetail> {
+  const key = name.toLowerCase();
+  const cached = typeCache.get(key);
+  if (cached) return cached;
+
+  const promise = fetch(`${BASE_URL}/type/${key}`).then(res => {
+    if (!res.ok) throw new Error(`Type "${name}" not found`);
+    return res.json() as Promise<TypeDetail>;
+  });
+
+  typeCache.set(key, promise);
+  promise.catch(() => typeCache.delete(key));
   return promise;
 }
 
