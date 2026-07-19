@@ -73,7 +73,7 @@ export default function Home() {
       .finally(() => setLoadingIndex(false));
   }, [isSearching, searchIndex]);
 
-  const sentinelRef = useInfiniteScroll(loadNextPage, hasMore && !isSearching);
+  const sentinelRef = useInfiniteScroll(loadNextPage, hasMore && !isSearching, items.length);
 
   const filteredResults = useMemo(() => {
     if (!isSearching || !searchIndex) return [];
