@@ -8,7 +8,12 @@ import { useFavorites } from '../context/FavoritesContext';
 import type { PokemonCardData, PokemonDetail } from '../types/pokemon';
 import { capitalize, decimetresToMetres, formatPokemonId, hectogramsToKg } from '../utils/format';
 import { typeColor } from '../utils/typeColors';
-import { calculateWeaknesses, type TypeEffectiveness } from '../utils/weaknesses';
+import {
+  calculateResistances,
+  calculateStrengths,
+  calculateWeaknesses,
+  type TypeEffectiveness,
+} from '../utils/typeMatchups';
 
 export default function PokemonDetailPage() {
   const { name } = useParams<{ name: string }>();
@@ -66,6 +71,8 @@ function ApiPokemonDetail({ name }: { name?: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [weaknesses, setWeaknesses] = useState<TypeEffectiveness[] | null>(null);
+  const [resistances, setResistances] = useState<TypeEffectiveness[] | null>(null);
+  const [strengths, setStrengths] = useState<string[] | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { isFavorite, toggleFavorite } = useFavorites();
 
@@ -74,17 +81,24 @@ function ApiPokemonDetail({ name }: { name?: string }) {
     setLoading(true);
     setError(null);
     setWeaknesses(null);
+    setResistances(null);
+    setStrengths(null);
     fetchPokemonDetail(name)
       .then(setPokemon)
       .catch(() => setError('Could not load this Pokémon.'))
       .finally(() => setLoading(false));
   }, [name]);
 
-  // Work out this Pokémon's weaknesses
+  // Work out this Pokémon's weaknesses, resistances, and strengths
   useEffect(() => {
     if (!pokemon) return;
     Promise.all(pokemon.types.map(t => fetchTypeDetail(t.type.name)))
-      .then(typeDetails => setWeaknesses(calculateWeaknesses(typeDetails.map(t => t.damage_relations))))
+      .then(typeDetails => {
+        const relations = typeDetails.map(t => t.damage_relations);
+        setWeaknesses(calculateWeaknesses(relations));
+        setResistances(calculateResistances(relations));
+        setStrengths(calculateStrengths(relations));
+      })
       .catch(console.error);
   }, [pokemon]);
 
@@ -188,26 +202,49 @@ function ApiPokemonDetail({ name }: { name?: string }) {
 
         {/* Weaknesses */}
         {weaknesses && weaknesses.length > 0 && (
+          <TypeEffectivenessSection title="Weak against" entries={weaknesses} />
+        )}
+
+        {/* Resistances */}
+        {resistances && resistances.length > 0 && (
+          <TypeEffectivenessSection title="Resistant to" entries={resistances} />
+        )}
+
+        {/* Offensive strengths */}
+        {strengths && strengths.length > 0 && (
           <div className="border-t border-slate-200 p-6 dark:border-slate-700">
             <h2 className="mb-4 text-lg font-semibold text-slate-800 dark:text-slate-100">
-              Weak against
+              Strong against
             </h2>
             <div className="flex flex-wrap gap-2">
-              {weaknesses.map(w => (
-                <span
-                  key={w.type}
-                  className="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-sm"
-                  style={{ backgroundColor: typeColor(w.type) }}
-                >
-                  {capitalize(w.type)}
-                  <span className="rounded-full bg-black/20 px-1.5 py-0.5 text-[10px]">
-                    {w.multiplier}×
-                  </span>
-                </span>
+              {strengths.map(type => (
+                <TypeBadge key={type} type={type} />
               ))}
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function TypeEffectivenessSection({ title, entries }: { title: string; entries: TypeEffectiveness[] }) {
+  return (
+    <div className="border-t border-slate-200 p-6 dark:border-slate-700">
+      <h2 className="mb-4 text-lg font-semibold text-slate-800 dark:text-slate-100">{title}</h2>
+      <div className="flex flex-wrap gap-2">
+        {entries.map(entry => (
+          <span
+            key={entry.type}
+            className="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-sm"
+            style={{ backgroundColor: typeColor(entry.type) }}
+          >
+            {capitalize(entry.type)}
+            <span className="rounded-full bg-black/20 px-1.5 py-0.5 text-[10px]">
+              {entry.multiplier}×
+            </span>
+          </span>
+        ))}
       </div>
     </div>
   );

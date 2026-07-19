@@ -54,11 +54,12 @@ export interface PokemonDetail {
   stats: PokemonStat[];
 }
 
-// Used to work out weaknesses and resistances for a type
+// Used to work out weaknesses, resistances, and strengths for a type
 export interface TypeDamageRelations {
   double_damage_from: NamedResource[];
   half_damage_from: NamedResource[];
   no_damage_from: NamedResource[];
+  double_damage_to: NamedResource[];
 }
 
 export interface TypeDetail {
