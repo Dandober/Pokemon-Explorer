@@ -1,6 +1,9 @@
 import { NavLink } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
@@ -40,6 +43,14 @@ export default function Navbar() {
           >
             Create
           </NavLink>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            className="ml-1 rounded-full border border-slate-200 p-2 text-base leading-none transition hover:bg-red-50 dark:border-slate-700 dark:hover:bg-slate-800"
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
         </nav>
       </div>
     </header>

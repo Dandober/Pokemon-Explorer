@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Switch `dark:` from following the OS setting to following a `.dark` class
+   on <html>, so ThemeContext can toggle it explicitly. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
 }
